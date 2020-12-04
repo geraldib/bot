@@ -22,10 +22,10 @@ app.post('/', (req, res) => {
 
   // Case 1: When BOT was added to the ROOM
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
-    text = `Thanks for adding me to the AAAA ${req.body.space.displayName}`;
+    text = `Thanks for adding me to ${req.body.space.displayName}`;
 
-    var fileMetadata = {
-        'name': 'Invoices',
+      const fileMetadata = {
+        'name': `${req.body.space.displayName}`,
         'mimeType': 'application/vnd.google-apps.folder'
       };
 
@@ -37,9 +37,11 @@ app.post('/', (req, res) => {
           // Handle error
           console.error(err);
         } else {
-            text = `Created:  ${req.body.space.displayName}`;
+            console.log("Created Ok");
         }
       });
+
+    text = `Folder: "${req.body.space.displayName}" was created!`;
 
 //   Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
