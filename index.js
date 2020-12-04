@@ -2,7 +2,7 @@ const express = require('express');
 const PORT = process.env.PORT || 5000;
 const {google} = require('googleapis');
 
-const drive = google.drive('v3');
+const drive = 'https://www.googleapis.com/upload/drive/v3/files';
 
 const app = express()
     .use(express.urlencoded({extended: false}))
