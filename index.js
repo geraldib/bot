@@ -90,8 +90,22 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-//   const drive = google.drive({version: 'v3', auth});
-  console.log("driver authenticated`1");
+  const drive = google.drive({version: 'v3', auth});
+  var fileMetadata = {
+    'name': 'Invoices',
+    'mimeType': 'application/vnd.google-apps.folder'
+  };
+  drive.files.create({
+    resource: fileMetadata,
+    fields: 'id'
+  }, function (err, file) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      console.log('Folder Id: ', file.id);
+    }
+  });
 }
 
 
@@ -103,12 +117,11 @@ app.post('/', (req, res) => {
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
     text = `Thanks for adding me to the AAAA ${req.body.space.displayName}`;
 
-    const drive = google.drive({version: 'v3', authUser});
-
     var fileMetadata = {
         'name': 'Invoices',
         'mimeType': 'application/vnd.google-apps.folder'
       };
+
       drive.files.create({
         resource: fileMetadata,
         fields: 'id'
