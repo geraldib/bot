@@ -5,7 +5,7 @@ const readline = require('readline');
 const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -90,22 +90,8 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-  const drive = google.drive({version: 'v3', auth});
-  var fileMetadata = {
-    'name': 'Invoices',
-    'mimeType': 'application/vnd.google-apps.folder'
-  };
-  drive.files.create({
-    resource: fileMetadata,
-    fields: 'id'
-  }, function (err, file) {
-    if (err) {
-      // Handle error
-      console.error(err);
-    } else {
-      console.log('Folder Id: ', file.id);
-    }
-  });
+//   const drive = google.drive({version: 'v3', auth});
+  console.log("driver authenticated`1");
 }
 
 
@@ -117,18 +103,20 @@ app.post('/', (req, res) => {
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
     text = `Thanks for adding me to the AAAA ${req.body.space.displayName}`;
 
+    const drive = google.drive({version: 'v3', authUser});
+
     var fileMetadata = {
         'name': 'Invoices',
         'mimeType': 'application/vnd.google-apps.folder'
       };
-
+      
       drive.files.create({
         resource: fileMetadata,
         fields: 'id'
       }, function (err, file) {
         if (err) {
           // Handle error
-          console.error(err);
+            text = `I am here at least`;
         } else {
             text = `The Folder: ${req.body.space.displayName} was created!`;
         }
