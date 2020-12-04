@@ -11,8 +11,7 @@ const SCOPES = ['https://www.googleapis.com/auth'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-//Authenticated user
-let authUser = '';
+const drive = google.drive('v3');
 
 const app = express()
     .use(express.urlencoded({extended: false}))
@@ -43,13 +42,11 @@ function authorize(credentials, callback) {
   const {client_secret, client_id, redirect_uris} = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);  
-  authUser = oAuth2Client;
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getAccessToken(oAuth2Client, callback);
     oAuth2Client.setCredentials(JSON.parse(token));
-    authUser = oAuth2Client;
     callback(oAuth2Client);
   });
 }
@@ -90,24 +87,7 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-  const drive = google.drive({version: 'v3', auth});
-      var fileMetadata = {
-        'name': 'Invoices',
-        'mimeType': 'application/vnd.google-apps.folder'
-      };
-
-      drive.files.create({
-        resource: fileMetadata,
-        fields: 'id'
-      }, function (err, file) {
-        if (err) {
-          // Handle error
-          console.error(err);
-        } else {
-            console.log("Folder was created!!!");
-        }
-    });
-
+//   const drive = google.drive({version: 'v3', auth});
 }
 
 
@@ -119,23 +99,22 @@ app.post('/', (req, res) => {
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
     text = `Thanks for adding me to the AAAA ${req.body.space.displayName}`;
 
-    // const drive = google.drive({version: 'v3', authUser});
-
-    // var fileMetadata = {
-    //     'name': 'Invoices',
-    //     'mimeType': 'application/vnd.google-apps.folder'
-    //   };
-    //   drive.files.create({
-    //     resource: fileMetadata,
-    //     fields: 'id'
-    //   }, function (err, file) {
-    //     if (err) {
-    //       // Handle error
-    //       console.error(err);
-    //     } else {
-    //         text = `The Folder: ${req.body.space.displayName} was created!`;
-    //     }
-    // });
+    var fileMetadata = {
+        'name': 'Invoices',
+        'mimeType': 'application/vnd.google-apps.folder'
+      };
+      
+      drive.files.create({
+        resource: fileMetadata,
+        fields: 'id'
+      }, function (err, file) {
+        if (err) {
+          // Handle error
+          console.error(err);
+        } else {
+            text = `Created:  ${req.body.space.displayName}`;
+        }
+      });
 
 //   Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
