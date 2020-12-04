@@ -4,19 +4,6 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
-app.listen(PORT, () => {
-    console.log(`Server is running in port - ${PORT}`);
-});
-
-const app = express()
-    .use(express.urlencoded({extended: false}))
-    .use(express.json());
- 
-app.get('/', (req, res) => {
-    res.send('Hi');
-});
-
-
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
@@ -26,6 +13,18 @@ const TOKEN_PATH = 'token.json';
 
 //Authenticated user
 let authUser = '';
+
+const app = express()
+    .use(express.urlencoded({extended: false}))
+    .use(express.json());
+
+app.listen(PORT, () => {
+    console.log(`Server is running in port - ${PORT}`);
+});    
+ 
+app.get('/', (req, res) => {
+    res.send('Hi');
+});
 
 // Load client secrets from a local file.
 fs.readFile('credentials.json', (err, content) => {
