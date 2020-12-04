@@ -25,14 +25,9 @@ app.post('/', (req, res) => {
 
     drive.files.create({
         resource: fileMetadata,
-     }, function(err) {
-       if(err) {
-         // Handle error
-         text = `Could not create folder: "${req.body.space.displayName}"!`
-       } else {
-         text = `Folder: "${req.body.space.displayName}" was created.`
-       }
-     });
+    });
+
+    text = `Folder: "${req.body.space.displayName}" was created in google drive, good luck with the project!`;
 
   // Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
