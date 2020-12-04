@@ -18,21 +18,21 @@ app.post('/', (req, res) => {
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
     text = `Thanks for adding me to ${req.body.space.displayName}`;
 
-    var fileMetadata = {
-        'name': req.body.space.displayName,
-        'mimeType': 'application/vnd.google-apps.folder'
-      };
-      drive.files.create({
-        resource: fileMetadata,
-        fields: 'id'
-      }, function (err, file) {
-        if (err) {
-          // Handle error
-            text = `Folder was not created!!!`;
-        } else {
-            text = `Folder: "${req.body.space.displayName}" with ID: "${file}" was created!`;
-        }
-      });
+    // var fileMetadata = {
+    //     'name': req.body.space.displayName,
+    //     'mimeType': 'application/vnd.google-apps.folder'
+    //   };
+    //   drive.files.create({
+    //     resource: fileMetadata,
+    //     fields: 'id'
+    //   }, function (err, file) {
+    //     if (err) {
+    //       // Handle error
+    //         text = `Folder was not created!!!`;
+    //     } else {
+    //         text = `Folder: "${req.body.space.displayName}" with ID: "${file}" was created!`;
+    //     }
+    //   });
 
   // Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
