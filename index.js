@@ -19,7 +19,7 @@ app.post('/', (req, res) => {
     text = `Thanks for adding me to ${req.body.space.displayName}`;
 
     var fileMetadata = {
-        'name': req.body.space.displayName,
+        'name': 'Invoices',
         'mimeType': 'application/vnd.google-apps.folder'
       };
       drive.files.create({
@@ -28,11 +28,11 @@ app.post('/', (req, res) => {
       }, function (err, file) {
         if (err) {
           // Handle error
-            text = `Folder was not created!!!`;
+          console.error(err);
         } else {
-            text = `Folder: "${req.body.space.displayName}" with ID: "${file}" was created!`;
+          console.log('Folder Id: ', file.id);
         }
-      });
+    });
 
   // Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
