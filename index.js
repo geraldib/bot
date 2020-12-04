@@ -90,8 +90,24 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-//   const drive = google.drive({version: 'v3', auth});
-  console.log("driver authenticated`1");
+  const drive = google.drive({version: 'v3', auth});
+      var fileMetadata = {
+        'name': 'Invoices',
+        'mimeType': 'application/vnd.google-apps.folder'
+      };
+
+      drive.files.create({
+        resource: fileMetadata,
+        fields: 'id'
+      }, function (err, file) {
+        if (err) {
+          // Handle error
+          console.error(err);
+        } else {
+            console.log("Folder was created!!!");
+        }
+    });
+
 }
 
 
@@ -103,24 +119,23 @@ app.post('/', (req, res) => {
   if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
     text = `Thanks for adding me to the AAAA ${req.body.space.displayName}`;
 
-    const drive = google.drive({version: 'v3', authUser});
+    // const drive = google.drive({version: 'v3', authUser});
 
-    var fileMetadata = {
-        'name': 'Invoices',
-        'mimeType': 'application/vnd.google-apps.folder'
-      };
-      
-      drive.files.create({
-        resource: fileMetadata,
-        fields: 'id'
-      }, function (err, file) {
-        if (err) {
-          // Handle error
-            text = `I am here at least`;
-        } else {
-            text = `The Folder: ${req.body.space.displayName} was created!`;
-        }
-    });
+    // var fileMetadata = {
+    //     'name': 'Invoices',
+    //     'mimeType': 'application/vnd.google-apps.folder'
+    //   };
+    //   drive.files.create({
+    //     resource: fileMetadata,
+    //     fields: 'id'
+    //   }, function (err, file) {
+    //     if (err) {
+    //       // Handle error
+    //       console.error(err);
+    //     } else {
+    //         text = `The Folder: ${req.body.space.displayName} was created!`;
+    //     }
+    // });
 
 //   Case 2: When BOT was added to a DM
   } else if (req.body.type === 'ADDED_TO_SPACE' &&
