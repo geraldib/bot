@@ -36,7 +36,7 @@ app.post('/', (req, res) => {
     text = `Thanks for adding me to a DM, ${req.body.user.displayName}`;
   // Case 3: Texting the BOT
   } else if (req.body.type === 'MESSAGE') {
-    text = `Your message : ${req.body.message.text}`;
+    text = `Your message hhdhdhdhdhdh : ${req.body.message.text}`;
   }
   return res.json({text});
 });
