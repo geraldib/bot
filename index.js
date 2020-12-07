@@ -49,8 +49,8 @@ app.get('/auth_callback', function (req, res) {
       // The user did not give us permission.
       return res.redirect('/');
     } else {
+      return res.render("test", { code:  req.query.code});
       oauth2Client.getToken(req.query.code, function(err, token) {
-        return res.render("test", { code:  req.query.code});
         if (err)
           return res.redirect('/');
   
