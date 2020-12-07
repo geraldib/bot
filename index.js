@@ -63,7 +63,7 @@ const  authorize =  (credentials, callback) => {
 
   const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[0]);
 
-  fs.readFile(TOKEN_PATH, async (err, token) => {
+  fs.readFile(TOKEN_PATH, (err, token) => {
 
     if (err) {
 
@@ -74,6 +74,7 @@ const  authorize =  (credentials, callback) => {
 
       open(authUrl, {app: ['google chrome']});
 
+      return '';
     } 
 
       oAuth2Client.setCredentials(JSON.parse(token));
