@@ -6,18 +6,14 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const open = require('open');
 
-app.get('/', (req, res) => {
-  const theCode = res.send(JSON.stringify(req.query.code));
-
-  fs.readFile('credentials.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    authorize(JSON.parse(content), theCode, listFiles);
-  });
-
-});
-
 app.listen(PORT, () => {
   console.log(`Server is running in port - ${PORT}`);
+});
+
+const theCode = app.get('/', (req, res) => {
+  
+  return JSON.stringify(req.query.code);
+
 });
 
 
@@ -27,11 +23,11 @@ const TOKEN_PATH = 'token.json';
 
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
-  authorize(JSON.parse(content), null,listFiles);
+  authorize(JSON.parse(content), listFiles);
 });
 
 
-const  authorize =  (credentials, theCode, callback) => {
+const  authorize =  (credentials, callback) => {
 
   const {client_secret, client_id, redirect_uris} = credentials.web;
 
