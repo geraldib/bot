@@ -1,5 +1,5 @@
 const port = 3000;
-const baseURL = `https://gchatbotal.herokuapp.com`;
+const baseURL = process.env.PORT;
 
 module.exports = {
   // The secret for the encryption of the jsonwebtoken
