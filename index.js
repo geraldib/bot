@@ -51,25 +51,25 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.client_secret, 
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
-    if (req.query.error) {
-      // The user did not give us permission.
-      return res.redirect('/');
-    } else {
-      return res.render("test", { theCode: req.query.code });
-      // oauth2Client.getToken(req.query.code, function(err, token) {
-      //   if (err) return res.redirect('/');
+    return res.render("test", { theCode: req.query.code });
+    // if (req.query.error) {
+    //   // The user did not give us permission.
+    //   return res.redirect('/');
+    // } else {
+    //   oauth2Client.getToken(req.query.code, function(err, token) {
+    //     if (err) return res.redirect('/');
 
-      //   oAuth2Client.setCredentials(token);
+    //     oAuth2Client.setCredentials(token);
   
-      //   // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
-      //   fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-      //     if (err) return console.error(err);
-      //     console.log('Token stored to', TOKEN_PATH);
-      //   });
+    //     // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
+    //     fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+    //       if (err) return console.error(err);
+    //       console.log('Token stored to', TOKEN_PATH);
+    //     });
 
 
-      //   return res.redirect('/');
+    //     return res.redirect('/');
 
-      // });
-    }
+    //   });
+    // }
   });
