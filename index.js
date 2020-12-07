@@ -14,33 +14,6 @@ fs.readFile('credentials.json', (err, content) => {
 });
 
 
-
-// function authorize(credentials) {
-
-//   const {client_secret, client_id, redirect_uris} = credentials.web;
-
-//   const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[0]);
-
-//   // Check if we have previously stored a token.
-//   fs.readFile(TOKEN_PATH, (err, token) => {
-
-
-//       const authUrl = oAuth2Client.generateAuthUrl({
-//         access_type: 'offline',
-//         scope: SCOPES,
-//       });
-
-//       open(authUrl);
-
-//       const token = await oauth2Client.getToken(code);
-      
-//       oauth2Client.setCredentials(token);
-
-//       callback(oAuth2Client);
-//   })
-// }
-
-// 4/0AY0e-g4gj6zqhy960d7DS3sCBW0u0vNBJAR2TxETK_t4fSRYDqA0fBSZ9sdzruyAbtm9UA
 const  authorize =  (credentials, callback) => {
 
   const {client_secret, client_id, redirect_uris} = credentials.web;
@@ -55,7 +28,7 @@ const  authorize =  (credentials, callback) => {
         scope: SCOPES,
       });
 
-      open(authUrl);
+      open(authUrl, {app: ['google chrome']});
       code = "dasdas";
 
       oAuth2Client.getToken(code, (err,toke) => {
