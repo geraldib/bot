@@ -5,13 +5,15 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "debug": "node --nolazy --debug-brk=5858 index.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.16.3",
     "googleapis": "^39.2.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "open": "^7.3.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.2"
