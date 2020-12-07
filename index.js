@@ -20,6 +20,8 @@ app.get('/', (req, res) => {
   
   const theCode = JSON.stringify(req.query.code);
 
+  console.log(theCode);
+
   fs.readFile('credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     authorizeFirst(JSON.parse(content), theCode,listFiles);
