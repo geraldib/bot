@@ -1,11 +1,15 @@
-import express from 'express'
-var app = express()
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+app.listen(PORT, () => {
+    res.send("How ya doing");
+});
 
-app.get('/', function (req, res) {
-    res.send(req.params)
-})
+app.get("/", (req, res) => {
+    res.send("Hello World");
+});
 
 app.get('/:code/:scope', function (req, res) {
-    res.send(req.params)
+    res.send("Hello Code")
 })
