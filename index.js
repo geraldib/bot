@@ -51,5 +51,39 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.client_secret, 
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
-    return res.render("test", { theCode: req.query.code });
-  });
+
+    oauth2Client.getToken(req.query.code, (err, token) => {
+        if (err) return console.error('Error retrieving access token', err);
+        oauth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        listFiles(oauth2Client);
+    });
+
+});
+
+/**
+ * Lists the names and IDs of up to 10 files.
+ */
+function listFiles(auth) {
+    const drive = google.drive({version: 'v3', auth});
+    drive.files.list({
+      pageSize: 10,
+      fields: 'nextPageToken, files(id, name)',
+    }, (err, res) => {
+
+        if (err) return console.log('The API returned an error: ' + err);
+
+        const files = res.data.files;
+
+        files.map((file) => {
+            return res.render("index", { loginLink: file });
+        });
+
+    });
+}
+
+  
