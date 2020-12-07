@@ -6,20 +6,49 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const open = require('open');
 
+const SCOPES = ['https://www.googleapis.com/auth/drive'];
+const TOKEN_PATH = 'token.json';
+
 app.listen(PORT, () => {
   console.log(`Server is running in port - ${PORT}`);
 });
 
-const theCode = app.get('/', (req, res) => {
+
+//If this is Authorization:
+
+app.get('/', (req, res) => {
   
-  return JSON.stringify(req.query.code);
+  const theCode = JSON.stringify(req.query.code);
+
+  fs.readFile('credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    authorizeFirst(JSON.parse(content), theCode,listFiles);
+  });
 
 });
 
+const authorizeFirst = (credentials, authCode, callback) => {
 
-const SCOPES = ['https://www.googleapis.com/auth/drive'];
-const TOKEN_PATH = 'token.json';
+  const {client_secret, client_id, redirect_uris} = credentials.web;
+  const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[0]);
 
+  oAuth2Client.getToken(authCode, (err,token) => {
+    if (err) return console.error('Error retrieving access token', err);
+    oAuth2Client.setCredentials(token);
+
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+      if (err) return console.error(err);
+      console.log('Token stored to', TOKEN_PATH);
+    });
+  });
+
+  return callback(oAuth2Client);
+
+}
+
+
+
+// Start the Applications
 
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
@@ -37,24 +66,13 @@ const  authorize =  (credentials, callback) => {
   fs.readFile(TOKEN_PATH, async (err, token) => {
 
     if (err) {
-        const authUrl = oAuth2Client.generateAuthUrl({
+
+      const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: SCOPES,
       });
 
       open(authUrl, {app: ['google chrome']});
-
-      oAuth2Client.getToken(theCode, (err,token) => {
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-          if (err) return console.error(err);
-          console.log('Token stored to', TOKEN_PATH);
-        });
-        return callback(oAuth2Client);
-
-      });
 
     } 
 
@@ -66,21 +84,8 @@ const  authorize =  (credentials, callback) => {
 
 }
 
-app.post('/', (req, res) => {
-  let text = '';
-  // Case 1: When BOT was added to the ROOM
-  if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
-    text = `Thanks for adding me to ${req.body.space.displayName}`;
-  // Case 2: When BOT was added to a DM
-  } else if (req.body.type === 'ADDED_TO_SPACE' &&
-      req.body.space.type === 'DM') {
-    text = `Thanks for adding me to a DM, ${req.body.user.displayName}`;
-  // Case 3: Texting the BOT
-  } else if (req.body.type === 'MESSAGE') {
-    text = `Your message : ${req.body.message.text}`;
-  }
-  return res.json({text});
-});
+
+// The Callback function to be called
 
 function listFiles(auth) {
   const drive = google.drive({version: 'v3', auth});
