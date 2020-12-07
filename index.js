@@ -10,6 +10,9 @@ const CONFIG = require('./config');
 const app = express();
 // Allowing ourselves to use cookies
 const cookieParser = require('cookie-parser');
+
+const TOKEN_PATH = 'token.json';
+
 app.use(cookieParser());
 // Setting up EJS Views
 app.set('view engine', 'ejs');
