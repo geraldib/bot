@@ -6,9 +6,8 @@ const fs = require('fs');
 const {google} = require('googleapis');
 const open = require('open');
 
-
 app.get('/', (req, res) => {
-  res.send('Hi');
+  res.send(JSON.stringify(req.query.code));
 });
 
 app.listen(PORT, () => {
