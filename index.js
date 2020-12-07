@@ -7,17 +7,13 @@ const {google} = require('googleapis');
 const open = require('open');
 
 
+app.get('/', (req, res) => {
+  res.send('Hi');
+});
+
 app.listen(PORT, () => {
-  return console.log("hi");
+  console.log(`Server is running in port - ${PORT}`);
 });
-
-app.get("https://gchatbotal.herokuapp.com/", (req, res) => {
-  return console.log("Hellow Get");
-});
-
-app.get('https://gchatbotal.herokuapp.com/:code/:scope', function (req, res) {
-  return console.log("The Code is here");
-})
 
 
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
@@ -72,6 +68,22 @@ const  authorize =  (credentials, callback) => {
 
 
 }
+
+app.post('/', (req, res) => {
+  let text = '';
+  // Case 1: When BOT was added to the ROOM
+  if (req.body.type === 'ADDED_TO_SPACE' && req.body.space.type === 'ROOM') {
+    text = `Thanks for adding me to ${req.body.space.displayName}`;
+  // Case 2: When BOT was added to a DM
+  } else if (req.body.type === 'ADDED_TO_SPACE' &&
+      req.body.space.type === 'DM') {
+    text = `Thanks for adding me to a DM, ${req.body.user.displayName}`;
+  // Case 3: Texting the BOT
+  } else if (req.body.type === 'MESSAGE') {
+    text = `Your message : ${req.body.message.text}`;
+  }
+  return res.json({text});
+});
 
 function listFiles(auth) {
   const drive = google.drive({version: 'v3', auth});
