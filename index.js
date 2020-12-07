@@ -49,14 +49,13 @@ app.get('/auth_callback', function (req, res) {
       // The user did not give us permission.
       return res.redirect('/');
     } else {
-      return res.render("test", { code:  req.query.code});
       oauth2Client.getToken(req.query.code, function(err, token) {
         if (err)
           return res.redirect('/');
   
         // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
-        // res.cookie('jwt', jwt.sign(token, CONFIG.JWTsecret));
-        // return res.redirect('/get_some_data');
+        res.cookie('jwt', jwt.sign(token, CONFIG.JWTsecret));
+        return res.redirect('/');
       });
     }
   });
