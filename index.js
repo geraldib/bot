@@ -11,11 +11,11 @@ app.listen(PORT, () => {
   return console.log("hi");
 });
 
-app.get("/https://gchatbotal.herokuapp.com/", (req, res) => {
+app.get("https://gchatbotal.herokuapp.com/", (req, res) => {
   return console.log("Hellow Get");
 });
 
-app.get('/https://gchatbotal.herokuapp.com/:code/:scope', function (req, res) {
+app.get('https://gchatbotal.herokuapp.com/:code/:scope', function (req, res) {
   return console.log("The Code is here");
 })
 
