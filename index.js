@@ -1,5 +1,6 @@
 const express = require('express');
 const google = require('googleapis').google;
+const fs = require('fs');
 const jwt = require('jsonwebtoken');
 // Google's OAuth2 client
 const OAuth2 = google.auth.OAuth2;
@@ -50,12 +51,19 @@ app.get('/auth_callback', function (req, res) {
       return res.redirect('/');
     } else {
       oauth2Client.getToken(req.query.code, function(err, token) {
-        if (err)
-          return res.redirect('/');
+        if (err) return res.redirect('/');
+
+        oAuth2Client.setCredentials(token);
   
         // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
-        res.cookie('jwt', jwt.sign(token, CONFIG.JWTsecret));
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+
+
         return res.redirect('/');
+
       });
     }
   });
