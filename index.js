@@ -50,7 +50,7 @@ app.get('/auth_callback', function (req, res) {
       return res.redirect('/');
     } else {
       oauth2Client.getToken(req.query.code, function(err, token) {
-        return res.render("test", { token });
+        return res.render("test", { code:  req.query.code});
         if (err)
           return res.redirect('/');
   
