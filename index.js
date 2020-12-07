@@ -15,7 +15,7 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname);
 // Listen on the port defined in the config file
 
-app.listen(CONFIG.baseURL, function () {
+app.listen(CONFIG.port, function () {
   console.log(`Listening on port ${CONFIG.port}`);
 });
 
@@ -50,13 +50,13 @@ app.get('/auth_callback', function (req, res) {
       return res.redirect('/');
     } else {
       oauth2Client.getToken(req.query.code, function(err, token) {
+        return res.render("test", { token });
         if (err)
           return res.redirect('/');
   
         // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
         // res.cookie('jwt', jwt.sign(token, CONFIG.JWTsecret));
         // return res.redirect('/get_some_data');
-        return res.render("test", { code: req.query.code });
       });
     }
   });
