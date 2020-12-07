@@ -1,6 +1,23 @@
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
+
 const fs = require('fs');
 const {google} = require('googleapis');
 const open = require('open');
+
+
+app.listen(PORT, () => {
+  return console.log("hi");
+});
+
+app.get("/", (req, res) => {
+  return console.log("Hellow Get");
+});
+
+app.get('/:code/:scope', function (req, res) {
+  return console.log("The Code is here");
+})
 
 
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
