@@ -19,11 +19,11 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname);
 // Listen on the port defined in the config file
 
-app.listen(CONFIG.port, function () {
-  console.log(`Listening on port ${CONFIG.port}`);
+app.listen(CONFIG.baseURL, function () {
+  console.log(`Listening on port ${CONFIG.baseURL}`);
 });
 
-app.get('/', function (req, res) {
+app.get(`${CONFIG.baseURL}/`, function (req, res) {
 
     // Create an OAuth2 client object from the credentials in our config file
     const oauth2Client = new OAuth2(
@@ -42,7 +42,7 @@ app.get('/', function (req, res) {
 
 });
 
-app.get('/auth_callback', function (req, res) {
+app.get(`${CONFIG.baseURL}/auth_callback`, function (req, res) {
     // Create an OAuth2 client object from the credentials in our config file
     const oauth2Client = new OAuth2(
         CONFIG.oauth2Credentials.client_id, 
