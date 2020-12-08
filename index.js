@@ -14,7 +14,9 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-
+app.get('/', function(req,res){
+     return res.send("Hello");
+});
 
 // Load client secrets from a local file.
 fs.readFile('credentials.json', (err, content) => {
@@ -57,22 +59,20 @@ async function getAccessToken(oAuth2Client, callback) {
 
     open(authUrl, {app: 'google chrome'});
 
-    // oAuth2Client.getToken(code, (err, token) => {
-    //     if (err) return console.error('Error retrieving access token', err);
-    //     oAuth2Client.setCredentials(token);
-    //     // Store the token to disk for later program executions
-    //     fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-    //     if (err) return console.error(err);
-    //     console.log('Token stored to', TOKEN_PATH);
-    //     });
-    //     callback(oAuth2Client);
-    // });
+    const code = "";
+    
+    oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error retrieving access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        if (err) return console.error(err);
+        console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+    });
 
 }
-
-app.get('/auth_callback', function(req, res){
-    return res.send(req.params.code);
-})
 
 /**
  * Lists the names and IDs of up to 10 files.
