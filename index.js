@@ -53,12 +53,9 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
 
-
-
-    return res.render("test", {theCode: req.query.code});
-
     oauth2Client.getToken(req.query.code, (err, token) => {
         if (err) return console.error('Error retrieving access token', err);
+        return res.send(JSON.stringify(token));
         oauth2Client.setCredentials(token);
         // Store the token to disk for later program executions
         fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
