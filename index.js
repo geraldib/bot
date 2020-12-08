@@ -6,7 +6,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', function (req,res) {
-    res.send('hahahah');
+    return res.send('hahahah');
 })
 
 // If modifying these scopes, delete token.json.
