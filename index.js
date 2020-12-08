@@ -1,97 +1,75 @@
-const express = require('express');
-const google = require('googleapis').google;
 const fs = require('fs');
-const jwt = require('jsonwebtoken');
-// Google's OAuth2 client
-const OAuth2 = google.auth.OAuth2;
-// Including our config file
-const CONFIG = require('./config');
-// Creating our express application
-const app = express();
-// Allowing ourselves to use cookies
-const cookieParser = require('cookie-parser');
-const { testing } = require('googleapis/build/src/apis/testing');
+const readline = require('readline');
+const {google} = require('googleapis');
 
+const open = require('open');
+
+const express = require('express');
+const app = express();
+
+// If modifying these scopes, delete token.json.
+const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+// The file token.json stores the user's access and refresh tokens, and is
+// created automatically when the authorization flow completes for the first
+// time.
 const TOKEN_PATH = 'token.json';
 
-const PORT = process.env.PORT || 9000;
 
-app.use(cookieParser());
-// Setting up EJS Views
-app.set('view engine', 'ejs');
-app.set('views', __dirname);
-// Listen on the port defined in the config file
 
-app.listen(PORT, function () {
-  console.log(`Listening on port ${PORT}`);
-});
 
-app.get(`/`, function (req, res) {
+app.get('/', function(req, res) {
 
-    // Create an OAuth2 client object from the credentials in our config file
-    const oauth2Client = new OAuth2(
-        CONFIG.oauth2Credentials.client_id, 
-        CONFIG.oauth2Credentials.client_secret, 
-        CONFIG.oauth2Credentials.redirect_uris[0]
-    );
-
-    // Obtain the google login link to which we'll send our users to give us access
-    const loginLink = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: CONFIG.oauth2Credentials.scopes
-    });
-
-    return res.render("index", { loginLink: loginLink });
-
-});
-
-app.get(`/auth_callback`, function (req, res) {
-    // Create an OAuth2 client object from the credentials in our config file
-    const oauth2Client = new OAuth2(
-        CONFIG.oauth2Credentials.client_id, 
-        CONFIG.oauth2Credentials.client_secret, 
-        CONFIG.oauth2Credentials.redirect_uris[0]
-    );
-
-    const theCode = req.query.code;
-
-    // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, (err, token) => {
-
-        if (err) {
-            oauth2Client.getToken(theCode, (err, token) => {
-
-                if (err) return res.send(err);
-
-                return res.send(JSON.stringify(token));
-                
-                oauth2Client.setCredentials(token);
-
-                
-                // Store the token to disk for later program executions
-                fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                  if (err) return res.send(err);
-                  return res.send("Token was stored!");
+    fs.readFile('credentials.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        authorize(JSON.parse(content));
+      });
+      
+      
+      function authorize(credentials) {
+      
+        const {client_secret, client_id, redirect_uris} = credentials.web;
+        const oAuth2Client = new google.auth.OAuth2(
+            client_id, client_secret, redirect_uris[0]);
+      
+      
+        fs.readFile(TOKEN_PATH, (err, token) => {
+          if (err) {
+      
+              const authUrl = oAuth2Client.generateAuthUrl({
+                  access_type: 'offline',
+                  scope: SCOPES,
                 });
-                listFiles(oauth2Client);
-            });
-        }
+      
+            open(authUrl);
+            console.log(authUrl);
+          }
+      
+          oAuth2Client.setCredentials(JSON.parse(token));
+          console.log("Already created!!!");
+      
+        });
+      }
 
-        oauth2Client.setCredentials(JSON.parse(token));
-        listFiles(oauth2Client);
+      res.redirect('/auth_callback');
 
+});  
+
+app.get(`/auth_callback`, function (req, res) 
+{
+
+    oAuth2Client.getToken(req.params.code, (err, token) => {
+
+        if (err) return console.error('Error retrieving access token', err);
+        oAuth2Client.setCredentials(token);
+
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        if (err) return console.error(err);
+        console.log('Token stored to', TOKEN_PATH);
+        });
+        return res.send("Here");
+        
     });
-
-
 
 });
 
-/**
- * Lists the names and IDs of up to 10 files.
- */
-function listFiles(auth) {
-    const drive = google.drive({version: 'v3', auth});
-    return res.send('It worked!!!');
-}
 
-  
