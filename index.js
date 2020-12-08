@@ -53,17 +53,28 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
 
-    oauth2Client.getToken(req.query.code, (err, token) => {
-        // if (err) console.error('Error retrieving access token', err);
-        oauth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        //   if (err) console.error(err);
-        //   console.log('Token stored to', TOKEN_PATH);
-        });
+    // Check if we have previously stored a token.
+    fs.readFile(TOKEN_PATH, (err, token) => {
+
+        if (err) {
+            oauth2Client.getToken(req.query.code, (err, token) => {
+                if (err) return res.send("Se marr dot tokenin");
+                oauth2Client.setCredentials(token);
+                // Store the token to disk for later program executions
+                fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+                  if (err) return res.send("Nuk shkruj dot!!!");
+                  console.log('Token stored to', TOKEN_PATH);
+                });
+                listFiles(oauth2Client);
+            });
+        }
+
+        oauth2Client.setCredentials(JSON.parse(token));
+        listFiles(oauth2Client);
+
     });
 
-    listFiles(oauth2Client);
+
 
 });
 
@@ -71,8 +82,8 @@ app.get(`/auth_callback`, function (req, res) {
  * Lists the names and IDs of up to 10 files.
  */
 function listFiles(auth) {
-    // const drive = google.drive({version: 'v3', auth});
-    return res.send(JSON.stringify(auth));
+    const drive = google.drive({version: 'v3', auth});
+    return res.send('It worked!!!');
 }
 
   
