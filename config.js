@@ -19,7 +19,7 @@ module.exports = {
         `${baseURL}/auth_callback`
     ],
     scopes: [
-      'https://www.googleapis.com/auth/drive.metadata.readonly'
+      'https://www.googleapis.com/auth/drive'
     ]
   }
 };
