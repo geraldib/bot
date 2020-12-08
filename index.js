@@ -56,7 +56,7 @@ app.get(`/auth_callback`, function (req, res) {
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
 
-        return res.send("Se lexoj dot");
+        return res.send(err);
 
         if (err) {
             oauth2Client.getToken(req.query.code, (err, token) => {
