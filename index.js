@@ -53,13 +53,15 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
 
+    return res.send(req.query.code);
+
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
 
         if (err) {
             oauth2Client.getToken(req.query.code, (err, token) => {
                 if (err) return res.send(err);
-                return res.send(JSON.stringify(req.query.code));
+                
                 oauth2Client.setCredentials(token);
 
                 
