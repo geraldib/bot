@@ -56,16 +56,14 @@ app.get(`/auth_callback`, function (req, res) {
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
 
-        return res.send(err);
-
         if (err) {
             oauth2Client.getToken(req.query.code, (err, token) => {
-                if (err) return res.send("Se marr dot tokenin");
+                if (err) return res.send(err);
                 oauth2Client.setCredentials(token);
                 // Store the token to disk for later program executions
                 fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                  if (err) return res.send("Nuk shkruj dot!!!");
-                  console.log('Token stored to', TOKEN_PATH);
+                  if (err) return res.send(err);
+                  return res.send("Token was stored!");
                 });
                 listFiles(oauth2Client);
             });
