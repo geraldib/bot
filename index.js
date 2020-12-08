@@ -54,15 +54,16 @@ app.get(`/auth_callback`, function (req, res) {
     );
 
     oauth2Client.getToken(req.query.code, (err, token) => {
-        if (err) console.error('Error retrieving access token', err);
+        // if (err) console.error('Error retrieving access token', err);
         oauth2Client.setCredentials(token);
         // Store the token to disk for later program executions
         fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-          if (err) console.error(err);
-          console.log('Token stored to', TOKEN_PATH);
+        //   if (err) console.error(err);
+        //   console.log('Token stored to', TOKEN_PATH);
         });
-        listFiles(oauth2Client);
     });
+
+    listFiles(oauth2Client);
 
 });
 
@@ -70,8 +71,8 @@ app.get(`/auth_callback`, function (req, res) {
  * Lists the names and IDs of up to 10 files.
  */
 function listFiles(auth) {
-    const drive = google.drive({version: 'v3', auth});
-    return res.send(JSON.stringify(drive));
+    // const drive = google.drive({version: 'v3', auth});
+    return res.send(JSON.stringify(auth));
 }
 
   
