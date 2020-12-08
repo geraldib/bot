@@ -5,6 +5,8 @@ const {google} = require('googleapis');
 const express = require('express');
 const app = express();
 
+const open = require('open');
+
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
@@ -55,7 +57,7 @@ async function getAccessToken(oAuth2Client, callback) {
 
     open(authUrl, {app: 'googlechrome'});
 
-    var code = await getData();
+    var code = await getCode();
     
     oAuth2Client.getToken(code, (err, token) => {
         if (err) return console.error('Error retrieving access token', err);
