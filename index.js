@@ -21,7 +21,7 @@ app.get('/', function(req,res){
 
 app.get(`/auth_callback`, function (req, res) {
     return res.send(req.params.code);
-}
+});
 
 
 fs.readFile('credentials.json', (err, content) => {
