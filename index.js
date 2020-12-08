@@ -14,47 +14,35 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-const PORT = process.env.PORT || 9000;
-
-app.listen(PORT, function () {
-    console.log(`Listening on port ${PORT}`);
-});
 
 app.get('/', function(req, res) {
 
-    fs.readFile('credentials.json', (err, content) => {
+     fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         authorize(JSON.parse(content));
-      });
+    });
       
-      
-      function authorize(credentials) {
-      
-        const {client_secret, client_id, redirect_uris} = credentials.web;
-        const oAuth2Client = new google.auth.OAuth2(
-            client_id, client_secret, redirect_uris[0]);
-      
-      
-        fs.readFile(TOKEN_PATH, (err, token) => {
-          if (err) {
-      
-              const authUrl = oAuth2Client.generateAuthUrl({
-                  access_type: 'offline',
-                  scope: SCOPES,
-                });
-      
-            open(authUrl);
-            console.log(authUrl);
-          }
-      
-          oAuth2Client.setCredentials(JSON.parse(token));
-          console.log("Already created!!!");
-      
-        });
-      }
+    const {client_secret, client_id, redirect_uris} = credentials.web;
+    const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]);
+    
+    fs.readFile(TOKEN_PATH, (err, token) => {
+        if (err) {
+    
+            const authUrl = oAuth2Client.generateAuthUrl({
+                access_type: 'offline',
+                scope: SCOPES,
+            });
+    
+        open(authUrl);
 
-      res.redirect('/auth_callback');
-
+        }
+    
+        oAuth2Client.setCredentials(JSON.parse(token));
+        res.redirect("Already created!!!");
+    
+    });
+      
 });  
 
 app.get(`/auth_callback`, function (req, res) 
