@@ -10,6 +10,7 @@ const CONFIG = require('./config');
 const app = express();
 // Allowing ourselves to use cookies
 const cookieParser = require('cookie-parser');
+const { testing } = require('googleapis/build/src/apis/testing');
 
 const TOKEN_PATH = 'token.json';
 
@@ -52,6 +53,10 @@ app.get(`/auth_callback`, function (req, res) {
         CONFIG.oauth2Credentials.redirect_uris[0]
     );
 
+
+
+    return res.render("test", {theCode: req.query.code});
+
     oauth2Client.getToken(req.query.code, (err, token) => {
         if (err) return console.error('Error retrieving access token', err);
         oauth2Client.setCredentials(token);
@@ -70,20 +75,7 @@ app.get(`/auth_callback`, function (req, res) {
  */
 function listFiles(auth) {
     const drive = google.drive({version: 'v3', auth});
-    drive.files.list({
-      pageSize: 10,
-      fields: 'nextPageToken, files(id, name)',
-    }, (err, res) => {
-
-        if (err) return console.log('The API returned an error: ' + err);
-
-        const files = res.data.files;
-
-        files.map((file) => {
-            return res.render("index", { loginLink: file });
-        });
-
-    });
+    
 }
 
   
