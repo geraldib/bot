@@ -55,31 +55,24 @@ async function getAccessToken(oAuth2Client, callback) {
         scope: SCOPES,
     });
 
-    open(authUrl, {app: 'googlechrome'});
+    open(authUrl, {app: 'google chrome'});
 
-    var code = await getCode();
-    
-    oAuth2Client.getToken(code, (err, token) => {
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err);
-        console.log('Token stored to', TOKEN_PATH);
-        });
-        callback(oAuth2Client);
-    });
+    // oAuth2Client.getToken(code, (err, token) => {
+    //     if (err) return console.error('Error retrieving access token', err);
+    //     oAuth2Client.setCredentials(token);
+    //     // Store the token to disk for later program executions
+    //     fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+    //     if (err) return console.error(err);
+    //     console.log('Token stored to', TOKEN_PATH);
+    //     });
+    //     callback(oAuth2Client);
+    // });
 
 }
 
-function getCode() {
-
-    const code = app.get('/auth_callback', function(req, res){
-        return req.params.code;
-    })
-
-    return code;
-}
+app.get('/auth_callback', function(req, res){
+    return res.send(req.params.code);
+})
 
 /**
  * Lists the names and IDs of up to 10 files.
