@@ -14,8 +14,7 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-
-
+open("https://gchatbotal.herokuapp.com/");
 
 app.get('/', function(req, res) {
 
