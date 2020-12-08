@@ -14,7 +14,11 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-open("https://gchatbotal.herokuapp.com/");
+const PORT = process.env.PORT || 9000;
+
+app.listen(PORT, function () {
+    console.log(`Listening on port ${PORT}`);
+});
 
 app.get('/', function(req, res) {
 
