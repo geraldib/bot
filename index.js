@@ -2,25 +2,23 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 const express = require('express');
-const app = express();
 const open = require('open');
 const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 const TOKEN_PATH = 'token.json';
+
+
 const PORT = process.env.PORT || 9000;
 
-app.set('view engine', 'ejs');
-app.set('views', __dirname);
+const app = express()
+    .use(express.urlencoded({extended: false}))
+    .use(express.json());
 
-app.listen(PORT, function () {
-  console.log(`Listening on port ${PORT}`);
-});
-
-app.get('/', function(req,res){
-     return res.send("Hello");
+app.get('/', (req, res) => {
+    res.send('Hi');
 });
 
 app.get(`/auth_callback`, function (req, res) {
-    return res.send(req.params.code);
+    res.send(req.params.code);
 });
 
 
