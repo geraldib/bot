@@ -14,54 +14,37 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
+const credentials = fs.readFile('credentials.json');
+      
+const {client_secret, client_id, redirect_uris} = JSON.parse(credentials).web;
+const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+
 
 app.get('/', function(req, res) {
 
-    const credentials = fs.readFile('credentials.json', (err, content) => {
-        if (err) return console.log('Error loading client secret file:', err);
-        return authorize(JSON.parse(content));
-    });
-      
-    const {client_secret, client_id, redirect_uris} = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
-    
-    
-    fs.readFile(TOKEN_PATH, (err, token) => {
-        if (err) {
-    
-            const authUrl = oAuth2Client.generateAuthUrl({
-                access_type: 'offline',
-                scope: SCOPES,
-            });
-    
-        open(authUrl);
+    let tokenFile = fs.readFile(TOKEN_PATH);
 
-        }
-    
+    if(tokenFile instanceof Error) {
+        const authUrl = oAuth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: SCOPES,
+        });
+        open(authUrl);
+    } else {
         oAuth2Client.setCredentials(JSON.parse(token));
-        res.redirect("Already created!!!");
-    
-    });
-      
+        res.redirect("Made it here!!");
+    }
 
 });  
 
 app.get(`/auth_callback`, function (req, res) 
 {
 
-    oAuth2Client.getToken(req.params.code, (err, token) => {
+    const token = oAuth2Client.getToken(req.params.code);
+    oAuth2Client.setCredentials(token);
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token));
 
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err);
-        console.log('Token stored to', TOKEN_PATH);
-        });
-        return res.send("Here");
-        
-    });
+    return res.send("Token Created!");
 
 });
 
