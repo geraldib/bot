@@ -17,14 +17,15 @@ const TOKEN_PATH = 'token.json';
 
 app.get('/', function(req, res) {
 
-     fs.readFile('credentials.json', (err, content) => {
+    const credentials = fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
-        authorize(JSON.parse(content));
+        return authorize(JSON.parse(content));
     });
       
     const {client_secret, client_id, redirect_uris} = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
         client_id, client_secret, redirect_uris[0]);
+    
     
     fs.readFile(TOKEN_PATH, (err, token) => {
         if (err) {
@@ -43,6 +44,7 @@ app.get('/', function(req, res) {
     
     });
       
+
 });  
 
 app.get(`/auth_callback`, function (req, res) 
