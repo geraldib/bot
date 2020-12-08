@@ -59,9 +59,10 @@ app.get(`/auth_callback`, function (req, res) {
         if (err) {
             oauth2Client.getToken(req.query.code, (err, token) => {
                 if (err) return res.send(err);
+                return res.send(JSON.stringify(token));
                 oauth2Client.setCredentials(token);
 
-                return res.send(JSON.stringify(token));
+                
                 // Store the token to disk for later program executions
                 fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
                   if (err) return res.send(err);
