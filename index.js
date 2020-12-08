@@ -59,7 +59,7 @@ app.get(`/auth_callback`, function (req, res) {
         if (err) {
             oauth2Client.getToken(req.query.code, (err, token) => {
                 if (err) return res.send(err);
-                return res.send(JSON.stringify(token));
+                return res.send(req.query.code);
                 oauth2Client.setCredentials(token);
 
                 
